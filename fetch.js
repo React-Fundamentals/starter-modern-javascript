@@ -35,6 +35,42 @@ function list(signal) {
     });
 }
 
+async function listNew(signal) {
+  try {
+    const response = await fetch(
+      "https://api.opensea.io/api/v1/assets?limit=50",
+      {
+        signal,
+      }
+    );
+    const { assets } = await response.json();
+
+    return assets.map(
+      ({
+        asset_contract: { address: assetContractAddress },
+        collection: { name: collectionName },
+        description,
+        token_id: originalAssetId,
+        image_url: imageUrl,
+        name,
+        permalink: url,
+      }) => ({
+        assetContractAddress,
+        collectionName,
+        description,
+        originalAssetId,
+        imageUrl,
+        name,
+        url,
+      })
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// listNew().then(console.log);
+
 function formatNumber(input) {
   return Intl.NumberFormat("en-US").format(input);
 }
@@ -65,10 +101,6 @@ function read(inputs) {
     .catch(function (error) {
       console.log(error);
     });
-}
-
-function listNew() {
-  return 1;
 }
 
 function readNew() {
